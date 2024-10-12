@@ -3,6 +3,21 @@ struct Ticket {
     description: String,
     status: String,
 }
+enum Status {
+    ToDo,
+    InProgress,
+    Done
+}
+impl Into<Status> for String {
+    fn into(self) -> Status {
+        match self.as_str() {
+            "To-Do" => Status::ToDo,
+            "In Progress" => Status::InProgress,
+            "Done" => Status::Done,
+            _ => panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed")
+        }
+    }
+}
 
 impl Ticket {
     // TODO: implement the `new` function.
@@ -17,11 +32,25 @@ impl Ticket {
     // as well as some `String` methods. Use the documentation of Rust's standard library
     // to find the most appropriate options -> https://doc.rust-lang.org/std/string/struct.String.html
     fn new(title: String, description: String, status: String) -> Self {
-        todo!();
+        if title.len() == 0 {
+            panic!("Title cannot be empty");
+        }
+        if title.len() > 50 {
+            panic!("Title cannot be longer than 50 bytes")
+        }        
+        if description.len() == 0 {
+            panic!("Description cannot be empty");
+        }
+        if description.len() > 500 {
+            panic!("Description cannot be longer than 500 bytes")
+        }
+        if !["To-Do", "In Progress", "Done"].contains(&status.as_str()) {
+            panic!("Only `To-Do`, `In Progress`, and `Done` statuses are allowed")
+        };
         Self {
             title,
             description,
-            status,
+            status: status.into(),
         }
     }
 }
@@ -59,6 +88,7 @@ mod tests {
     #[should_panic(expected = "Only `To-Do`, `In Progress`, and `Done` statuses are allowed")]
     fn status_must_be_valid() {
         Ticket::new(valid_title(), valid_description(), "Funny".into());
+        // Ticket::new(valid_title(), valid_description(), Status::from("Funny"));
     }
 
     #[test]
