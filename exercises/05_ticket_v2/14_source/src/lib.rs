@@ -23,8 +23,14 @@ pub enum TicketNewError {
     DescriptionCannotBeEmpty,
     #[error("Description cannot be longer than 500 bytes")]
     DescriptionTooLong,
+    // #[error("InvalidStatus message")]
+    // InvalidStatus(#[from] status::ParseStatusError)
+    #[error("{source}")]
+    InvalidStatus {
+        #[from]
+        source: status::ParseStatusError,
+    }
 }
-
 #[derive(Debug, PartialEq, Clone)]
 pub struct Ticket {
     title: String,
@@ -47,12 +53,11 @@ impl Ticket {
             return Err(TicketNewError::DescriptionTooLong);
         }
 
-        // TODO: Parse the status string into a `Status` enum.
-
+        // Parse the status string into a `Status` enum.
         Ok(Ticket {
             title,
             description,
-            status,
+            status: status.try_into().map_err(TicketNewError::from)?
         })
     }
 }
@@ -71,6 +76,7 @@ mod tests {
             err.to_string(),
             "`invalid` is not a valid status. Use one of: ToDo, InProgress, Done"
         );
+        dbg!("{:?}", &err);
         assert!(err.source().is_some());
     }
 }

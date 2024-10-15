@@ -7,6 +7,39 @@ enum Status {
     InProgress,
     Done,
 }
+#[derive(Debug)]
+enum TicketError {
+    ParseStatusError(String),
+}
+impl TryFrom<String> for Status {
+    type Error = TicketError;
+    fn try_from(value: String) -> Result<Self, Self::Error> {
+        match value.to_lowercase().as_str() {
+            "to-do" | "todo" => Ok(Self::ToDo),
+            "inprogress" => Ok(Self::InProgress),
+            "done" => Ok(Self::Done),
+            _ => Err(TicketError::ParseStatusError(format!(
+                "Cannot parse Status from {}",
+                &value
+            ))),
+        }
+    }
+}
+
+impl TryFrom<&str> for Status {
+    type Error = TicketError;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        match value.to_lowercase().as_str() {
+            "to-do" | "todo" => Ok(Self::ToDo),
+            "inprogress" => Ok(Self::InProgress),
+            "done" => Ok(Self::Done),
+            _ => Err(TicketError::ParseStatusError(format!(
+                "Cannot parse Status from {}",
+                &value
+            ))),
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {

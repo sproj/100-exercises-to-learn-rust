@@ -1,9 +1,19 @@
 // TODO: Implement `TryFrom<String>` and `TryFrom<&str>` for the `TicketDescription` type,
 //   enforcing that the description is not empty and is not longer than 500 bytes.
 //   Implement the traits required to make the tests pass too.
+use crate::StringInputParseError;
 
+#[derive(Debug)]
 pub struct TicketDescription(String);
 
+#[derive(Debug, thiserror::Error)]
+pub enum TicketDescriptionError {
+    #[error({name} {length})]
+    DescriptionEmpty {
+        #[from]
+        source: StringInputParseError
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;

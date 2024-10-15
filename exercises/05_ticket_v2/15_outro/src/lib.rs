@@ -3,6 +3,8 @@ mod description;
 mod status;
 mod title;
 
+use std::fmt::Display;
+
 // A common pattern in Rust is to split code into multiple (private) modules
 // and then re-export the public parts of those modules at the root of the crate.
 //
@@ -25,4 +27,17 @@ pub struct Ticket {
     pub title: TicketTitle,
     pub description: TicketDescription,
     pub status: Status,
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum StringInputParseError {
+    #[error("{name} cannot be empty")]
+    Empty {
+        name: String
+    },
+    #[error("{name} cannot be longer than {length} bytes")]
+    TooLong {
+        name: String,
+        length: u32
+    },
 }
