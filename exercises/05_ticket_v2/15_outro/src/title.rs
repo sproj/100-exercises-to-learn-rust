@@ -2,44 +2,39 @@
 //   enforcing that the title is not empty and is not longer than 50 characters.
 //   Implement the traits required to make the tests pass too.
 
-use std::fmt::Display;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct TicketTitle(String);
 
 #[derive(Debug, thiserror::Error)]
-pub enum ParseTitleError{
+pub enum TicketTitleError{
+    #[error("The title cannot be empty")]
     Empty(String),
+    #[error("The title cannot be longer than 50 bytes")]
     TooLong(String)
 }
 
-impl Display for ParseTitleError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", self)
-    }
-}
-
 impl TryFrom<String> for TicketTitle {
-    type Error = ParseTitleError;
+    type Error = TicketTitleError;
     fn try_from(value: String) -> Result<Self, Self::Error> {
         if value.is_empty() {
-            return Err(ParseTitleError::Empty("The title cannot be empty".to_string()))
+            return Err(TicketTitleError::Empty("The title cannot be empty".to_string()))
         }
         if value.len() > 50 {
-            return Err(ParseTitleError::TooLong("The title cannot be longer than 50 bytes".to_string()))
+            return Err(TicketTitleError::TooLong("durka durkj".to_string()))
         }
         Ok(TicketTitle(value))
     }
 }
 
 impl TryFrom<&str> for TicketTitle {
-    type Error = ParseTitleError;
+    type Error = TicketTitleError;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
         if value.is_empty() {
-            return Err(ParseTitleError::Empty("The title cannot be empty".to_string()))
+            return Err(TicketTitleError::Empty("The title cannot be empty".to_string()))
         }
         if value.len() > 50 {
-            return Err(ParseTitleError::TooLong("The title cannot be longer than 50 bytes".to_string()))
+            return Err(TicketTitleError::TooLong("The title cannot be longer than 50 bytes".to_string()))
         }
         Ok(TicketTitle(value.into()))
     }
