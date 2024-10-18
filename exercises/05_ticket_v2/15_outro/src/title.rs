@@ -17,7 +17,7 @@ pub struct TicketTitle(String);
 #[derive(Debug, thiserror::Error)]
 pub enum TicketTitleError {
     #[error(transparent)]
-    Validation(#[from] StringInputError)
+    Validation(#[from] StringInputError),
 }
 
 impl TryFrom<String> for TicketTitle {
@@ -36,13 +36,14 @@ impl TryFrom<String> for TicketTitle {
 impl TryFrom<&str> for TicketTitle {
     type Error = TicketTitleError;
     fn try_from(value: &str) -> Result<Self, Self::Error> {
-        if value.is_empty() {
-            return Err(TicketTitleError::Validation(StringInputError::Empty { name: "title".to_string() }))
-        }
-        if value.len() > 50 {
-            return Err(TicketTitleError::Validation(StringInputError::TooLong { name: "title".to_string(), length: 50 }))
-        }
-        Ok(TicketTitle(value.into()))
+        value.to_string().try_into()
+        // if value.is_empty() {
+        //     return Err(TicketTitleError::Validation(StringInputError::Empty { name: "title".to_string() }))
+        // }
+        // if value.len() > 50 {
+        //     return Err(TicketTitleError::Validation(StringInputError::TooLong { name: "title".to_string(), length: 50 }))
+        // }
+        // Ok(TicketTitle(value.into()))
     }
 }
 #[cfg(test)]
