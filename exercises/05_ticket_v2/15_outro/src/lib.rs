@@ -27,15 +27,15 @@ pub struct Ticket {
     pub status: Status,
 }
 
-// #[derive(thiserror::Error, Debug)]
-// pub enum StringInputError {
-//     #[error("{name} cannot be empty")]
-//     Empty {
-//         name: String
-//     },
-//     #[error("{name} cannot be longer than {length} bytes")]
-//     TooLong {
-//         name: String,
-//         length: u32
-//     },
-// }
+#[derive(thiserror::Error, Debug)]
+pub enum StringInputError {
+    #[error("The {name} cannot be empty")]
+    Empty {
+        name: String
+    },
+    #[error("The {name} cannot be longer than {length} bytes")]
+    TooLong {
+        name: String,
+        length: u32
+    },
+}
